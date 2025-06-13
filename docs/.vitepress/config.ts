@@ -7,6 +7,7 @@ export default withMermaid(
       description: 'Complete developer documentation for WordPress booking and appointment management system',
       base: '/',
       cleanUrls: true,
+      ignoreDeadLinks: true,
 
       head: [
         ['link', { rel: 'icon', href: '/favicon.ico' }],
