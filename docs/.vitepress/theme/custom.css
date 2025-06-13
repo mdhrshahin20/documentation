@@ -1,0 +1,96 @@
+/**
+ * Customize default theme styling by overriding CSS variables:
+ * https://github.com/vuejs/vitepress/blob/main/src/client/theme-default/styles/vars.css
+ */
+
+:root {
+  --vp-c-brand-1: #646cff;
+  --vp-c-brand-2: #747bff;
+  --vp-c-brand-3: #858dff;
+  --vp-c-brand-soft: rgba(100, 108, 255, 0.14);
+}
+
+.dark {
+  --vp-c-brand-1: #747bff;
+  --vp-c-brand-2: #858dff;
+  --vp-c-brand-3: #969eff;
+  --vp-c-brand-soft: rgba(116, 123, 255, 0.16);
+}
+
+/* Custom styling for better visual hierarchy */
+.vp-doc h1 {
+  border-bottom: 2px solid var(--vp-c-brand-1);
+  padding-bottom: 0.5rem;
+}
+
+.vp-doc h2 {
+  border-bottom: 1px solid var(--vp-c-divider);
+  padding-bottom: 0.25rem;
+}
+
+/* Code blocks */
+.vp-doc [class*='language-'] {
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+/* Mermaid diagrams */
+.mermaid {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+/* Tables */
+.vp-doc table {
+  margin: 1rem 0;
+}
+
+.vp-doc th {
+  background-color: var(--vp-c-bg-soft);
+}
+
+/* Info boxes */
+.custom-block.info {
+  border-color: var(--vp-c-brand-1);
+}
+
+.custom-block.warning {
+  border-color: var(--vp-c-warning-1);
+}
+
+.custom-block.danger {
+  border-color: var(--vp-c-danger-1);
+}
+
+/* Feature grid */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.feature-card {
+  padding: 1.5rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft);
+  transition: all 0.2s ease;
+}
+
+.feature-card:hover {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card h3 {
+  margin-top: 0;
+  color: var(--vp-c-brand-1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+}
