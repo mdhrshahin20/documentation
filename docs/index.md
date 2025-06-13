@@ -6,7 +6,7 @@ hero:
   text: "WordPress Plugin Documentation"
   tagline: "Complete developer guide for building booking and appointment management systems"
   image:
-    src: /hero-image.svg
+    src: /hero-image.jpg
     alt: Radius Booking
   actions:
     - theme: brand
