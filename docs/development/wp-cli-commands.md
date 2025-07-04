@@ -1,30 +1,85 @@
 # WP-CLI Commands
 
-The Radius Booking plugin provides a comprehensive set of WP-CLI commands for scaffolding, database management, and development tasks. These commands follow Laravel-style architecture patterns and help maintain consistency across the codebase.
+<p>This document provides clear instructions for developers using the <strong>Artisan-style WP-CLI commands</strong> in the Radius Booking plugin to quickly scaffold and manage your plugin's modules, database, and API architecture.</p>
 
-## Command Registry System
+---
 
-The plugin uses a centralized command registry system for managing WP-CLI commands:
+## 📦 Artisan Command Namespace
 
-```php
-if ( defined( 'WP_CLI' ) && WP_CLI ) {
-    $command_registry = new \RadiusTheme\RadiusBooking\Core\CommandRegistry();
-    $command_registry->init();
-}
+All commands are registered under:
+
+```bash
+wp radius artisan
 ```
 
-## Available Commands
+---
+
+## ⚙️ Module Development Structure
+
+Each module follows a **standard Laravel-style architecture**:
+
+```
+Model → Repository → Resource → Service → Controller
+```
+
+You can generate each component manually or in one go using the `make:module` command.
+
+---
+
+## 💪 Available Commands
+
+### 🔧 Table Commands
+
+| Command | Description |
+|---------|-------------|
+| `wp radius artisan make:table TableName` | Generate a migration table class (e.g. CategoriesTable). |
+| `wp radius artisan delete:table TableName` | Delete the migration table class (e.g. CategoriesTable). |
 
 ### 🏗️ Scaffolding Commands
 
-#### Make Model
-Generate a new model class with proper structure and relationships.
+| Command | Description |
+|---------|-------------|
+| `wp radius artisan make:model ModelName` | Generate a new model class with proper structure and relationships. |
+| `wp radius artisan make:repository RepositoryName` | Create a repository class for data access abstraction. |
+| `wp radius artisan make:resource ResourceName` | Generate API resource transformers for consistent data formatting. |
+| `wp radius artisan make:service ServiceName` | Create service classes for business logic layer. |
+| `wp radius artisan make:controller ControllerName` | Generate REST API controllers with standard CRUD operations. |
+| `wp radius artisan make:module ModuleName` | Generate complete module with all components. |
+
+### 🗄️ Database Commands
+
+| Command | Description |
+|---------|-------------|
+| `wp radius artisan migrate` | Execute all pending database migrations. |
+| `wp radius artisan migrate --refresh` | Refresh all migrations (drop and recreate). |
+| `wp radius artisan migrate --status` | Show migration status. |
+| `wp radius artisan migrate --rollback --steps=1` | Rollback migrations. |
+
+---
+
+## 🔀 Lifecycle Example
+
+Let's say you want to create a `Location` module with migration:
 
 ```bash
-wp radius artisan make:model Location
+wp radius artisan make:table LocationsTable
+wp radius artisan make:module Location
+wp radius artisan migrate
 ```
 
-**Generated Structure:**
+Done! Now you have a fully functional module with:
+
+- A `Location` model
+- API-ready controller
+- Business logic layer
+- REST transformation logic
+- Registered route via your plugin router
+
+---
+
+## 📋 Generated Code Examples
+
+### Model Structure
 ```php
 class Location extends BaseModel {
     protected string $table = 'locations';
@@ -40,14 +95,7 @@ class Location extends BaseModel {
 }
 ```
 
-#### Make Repository
-Create a repository class for data access abstraction.
-
-```bash
-wp radius artisan make:repository LocationRepository
-```
-
-**Generated Structure:**
+### Repository Structure
 ```php
 class LocationRepository extends BaseRepository {
     protected string $model = Location::class;
@@ -61,14 +109,7 @@ class LocationRepository extends BaseRepository {
 }
 ```
 
-#### Make Resource
-Generate API resource transformers for consistent data formatting.
-
-```bash
-wp radius artisan make:resource LocationResource
-```
-
-**Generated Structure:**
+### Resource Structure
 ```php
 class LocationResource extends BaseResource {
     public function transform( $location ): array {
@@ -89,14 +130,7 @@ class LocationResource extends BaseResource {
 }
 ```
 
-#### Make Service
-Create service classes for business logic layer.
-
-```bash
-wp radius artisan make:service LocationService
-```
-
-**Generated Structure:**
+### Service Structure
 ```php
 class LocationService {
     public function __construct(
@@ -121,14 +155,7 @@ class LocationService {
 }
 ```
 
-#### Make Controller
-Generate REST API controllers with standard CRUD operations.
-
-```bash
-wp radius artisan make:controller LocationController
-```
-
-**Generated Structure:**
+### Controller Structure
 ```php
 class LocationController extends BaseRestController {
     protected string $rest_base = 'locations';
@@ -150,16 +177,7 @@ class LocationController extends BaseRestController {
 }
 ```
 
-### 🗄️ Database Commands
-
-#### Make Table
-Create database migration files with proper schema structure.
-
-```bash
-wp radius artisan make:table Locations
-```
-
-**Generated Migration:**
+### Table Migration Structure
 ```php
 class LocationsTable extends Migration {
     public function up( Builder $table ) {
@@ -179,74 +197,33 @@ class LocationsTable extends Migration {
 }
 ```
 
-#### Run Migrations
-Execute all pending database migrations.
+---
 
-```bash
-wp radius artisan migrate
-```
+## 🚀 API Routes Generated
 
-#### Delete Table
-Remove a table migration file and optionally drop the table.
+When you create a controller, the following REST API routes are automatically available:
 
-```bash
-wp radius artisan delete:table LocationsTable
-```
+| Method | Route                    | Description        | Controller Method |
+|--------|--------------------------|--------------------|-------------------|
+| GET    | `/radius/v1/locations`   | List all           | `index()`         |
+| POST   | `/radius/v1/locations`   | Create             | `store()`         |
+| GET    | `/radius/v1/locations/1` | Show               | `show()`          |
+| PUT    | `/radius/v1/locations/1` | Update             | `update()`        |
+| DELETE | `/radius/v1/locations/1` | Delete             | `destroy()`       |
 
-**Options:**
-- `--force`: Drop the table from database
-- `--backup`: Create backup before deletion
+---
 
-## Full Module Generation Workflow
+## 🥪 Tips for Developers
 
-### Complete Location Module Example
+- Follow naming conventions (e.g. `CategoriesTable`, `UserProfileRepository`).
+- Use `make:module` when starting fresh to speed up development.
+- Use `migrate --refresh` frequently during dev to reset schema quickly.
+- Use `controller`, `service`, and `repository` layers to separate responsibilities cleanly.
+- Every generated controller supports RESTful structure and is registered in the plugin API.
 
-Generate a complete module with all components:
+---
 
-```bash
-# 1. Create database table
-wp radius artisan make:table Locations
-
-# 2. Run migration
-wp radius artisan migrate
-
-# 3. Generate model
-wp radius artisan make:model Location
-
-# 4. Generate repository
-wp radius artisan make:repository LocationRepository
-
-# 5. Generate resource
-wp radius artisan make:resource LocationResource
-
-# 6. Generate service
-wp radius artisan make:service LocationService
-
-# 7. Generate controller
-wp radius artisan make:controller LocationController
-```
-
-This creates the following structure:
-
-```
-includes/
-├── Models/
-│   └── Location.php
-├── Repositories/
-│   └── LocationRepository.php
-├── Resources/
-│   └── LocationResource.php
-├── Services/
-│   └── LocationService.php
-├── Controllers/
-│   └── Api/
-│       └── LocationController.php
-└── Database/
-    └── Tables/
-        └── LocationsTable.php
-```
-
-## Advanced Usage
+## 🔧 Advanced Usage
 
 ### Custom Command Registration
 
@@ -268,7 +245,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 }
 ```
 
-### Integration with Dependency Injection
+### Integration with Dependency Injection Container
 
 ```php
 // In your service provider or bootstrap file
@@ -281,7 +258,35 @@ $registry = $container->get('command.registry');
 $registry->addCommand('custom:command', 'CustomCommand')->init();
 ```
 
-## Command Options and Flags
+---
+
+## 📚 Summary Cheat Sheet
+
+```bash
+# Table
+wp radius artisan make:table CategoriesTable
+wp radius artisan delete:table CategoriesTable
+
+# Migration
+wp radius artisan migrate
+wp radius artisan migrate --refresh
+wp radius artisan migrate --status
+wp radius artisan migrate --rollback --steps=1
+
+# Module Parts
+wp radius artisan make:model User
+wp radius artisan make:repository UserRepository
+wp radius artisan make:resource UserResource
+wp radius artisan make:service UserService
+wp radius artisan make:controller UserController
+
+# All-in-One
+wp radius artisan make:module User
+```
+
+---
+
+## 🛠️ Command Options and Flags
 
 ### Global Options
 
@@ -305,19 +310,40 @@ wp radius artisan make:service LocationService --namespace="Custom\Namespace"
 wp radius artisan make:controller LocationController --dry-run
 ```
 
-## API Routes Generated
+---
 
-When you create a controller, the following REST API routes are automatically available:
+## 🔍 Troubleshooting
 
-| Method | Route                    | Description        | Controller Method |
-|--------|--------------------------|--------------------|-------------------|
-| GET    | `/radius/v1/locations`   | List all           | `index()`         |
-| POST   | `/radius/v1/locations`   | Create             | `store()`         |
-| GET    | `/radius/v1/locations/1` | Show               | `show()`          |
-| PUT    | `/radius/v1/locations/1` | Update             | `update()`        |
-| DELETE | `/radius/v1/locations/1` | Delete             | `destroy()`       |
+### Common Issues
 
-## Best Practices
+#### Command Not Found
+```bash
+Error: 'radius' is not a registered wp command.
+```
+
+**Solution:** Ensure the command registry is properly initialized in your plugin bootstrap file.
+
+#### Permission Errors
+```bash
+Error: Could not create file. Permission denied.
+```
+
+**Solution:** Check file permissions on the includes directory:
+```bash
+chmod 755 includes/
+chmod 644 includes/**/*.php
+```
+
+#### Namespace Conflicts
+```bash
+Fatal error: Cannot declare class Location
+```
+
+**Solution:** Use unique namespaces or check for existing class names before generation.
+
+---
+
+## 🎯 Best Practices
 
 ### 1. Follow the Architecture Pattern
 Always generate components in this order:
@@ -373,73 +399,6 @@ class LocationService {
     }
 }
 ```
-
-## Troubleshooting
-
-### Common Issues
-
-#### Command Not Found
-```bash
-Error: 'radius' is not a registered wp command.
-```
-
-**Solution:** Ensure the command registry is properly initialized in your plugin bootstrap file.
-
-#### Permission Errors
-```bash
-Error: Could not create file. Permission denied.
-```
-
-**Solution:** Check file permissions on the includes directory:
-```bash
-chmod 755 includes/
-chmod 644 includes/**/*.php
-```
-
-#### Namespace Conflicts
-```bash
-Fatal error: Cannot declare class Location
-```
-
-**Solution:** Use unique namespaces or check for existing class names before generation.
-
-### Debug Mode
-
-Enable debug mode to see detailed command execution:
-
-```php
-if ( WP_DEBUG ) {
-    WP_CLI::debug( 'Command executed successfully' );
-}
-```
-
-## Integration with IDE
-
-### VS Code Snippets
-
-Create custom snippets for faster development:
-
-```json
-{
-  "Generate Location Module": {
-    "prefix": "rb-module",
-    "body": [
-      "wp radius artisan make:table ${1:TableName}",
-      "wp radius artisan migrate",
-      "wp radius artisan make:model ${2:ModelName}",
-      "wp radius artisan make:repository ${2:ModelName}Repository",
-      "wp radius artisan make:resource ${2:ModelName}Resource",
-      "wp radius artisan make:service ${2:ModelName}Service",
-      "wp radius artisan make:controller ${2:ModelName}Controller"
-    ],
-    "description": "Generate complete module structure"
-  }
-}
-```
-
-### PHPStorm File Templates
-
-Create file templates for consistent code generation across your team.
 
 ::: tip Command Efficiency
 Use the WP-CLI commands to maintain consistency across your codebase. The generated files follow established patterns and include proper type hints, documentation, and error handling.
