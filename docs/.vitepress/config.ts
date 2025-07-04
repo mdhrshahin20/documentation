@@ -61,6 +61,7 @@ export default withMermaid(
                 { text: 'Setup Guide', link: '/development/setup' },
                 { text: 'File Organization', link: '/development/file-organization' },
                 { text: 'Naming Conventions', link: '/development/naming-conventions' },
+                { text: 'WP-CLI Commands', link: '/development/wp-cli-commands' },
                 { text: 'Testing Strategy', link: '/development/testing' },
                 { text: 'Best Practices', link: '/development/best-practices' },
                 { text: 'Deployment', link: '/development/deployment' }
